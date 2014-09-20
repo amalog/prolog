@@ -58,8 +58,16 @@ token(_State,Token) -->
     { token_codes(Token,Codes) }.
 
 
+%% token_codes(Token,Codes)
+%
+%  True if Token is represented in Amalog as Codes.
 token_codes(Token,Codes) :-
-    atom_codes(Token,Codes).
+    phrase(typed_token(Token),Codes).
+
+
+typed_token(Token) -->
+    at_least(1,atom_char,Codes),
+    { atom_codes(Token,Codes) }.
 
 
 
@@ -69,6 +77,13 @@ nl -->
 
 eos([],[]).
 
+
+atom_char -->
+    atom_char(_).
+
+atom_char(C) -->
+    [C],
+    { atom_char(C) }.
 
 black -->
     black(_).
@@ -88,6 +103,11 @@ white(Char) -->
     [Char],
     { white_char(Char) }.
 
+
+atom_char(C) :-
+    black_char(C),
+    C \== 0'_,
+    \+ code_type(C,upper).
 
 black_char(C) :-
     \+ white_char(C),
