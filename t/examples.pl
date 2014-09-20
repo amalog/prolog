@@ -1,8 +1,7 @@
-:- use_module(library(amalog)).
-
-% define helper predicates here
+:- use_module(library(amalog), []).
 
 :- use_module(library(tap)).
 
-% add tests showing common usage
-todo :- fail.
+facts :-
+    bagof( T, amalog:read(file("t/samples/facts.ama"),T), Terms),
+    Terms == [ language(amalog), language(prolog) ].
