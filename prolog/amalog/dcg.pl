@@ -11,8 +11,9 @@ term(Term) -->
 
 
 fact(State,Term) -->
-    functor(State,Functor),
-    at_least(1,argument(State),Args),
+    { struct:indent_level(State,0) },
+    token(State,Functor),
+    at_least(1,token(State),Args),
     ( nl,eos          % last fact in the file
     ; nl,followed_by(black)        % followed by another clause
     ; nl,nl,nl,followed_by(black)  % last fact in the predicate
@@ -49,23 +50,16 @@ followed_by(Goal) -->
     \+ \+ Goal.
 
 
-functor(State,Functor) -->
-    { struct:indent_level(State,0) },
-    token(State,Token),
-    { atom_codes(Functor,Token) }.
-
-
-argument(State,Arg) -->
-    token(State,Token),
-    { atom_codes(Arg,Token) }.
-
-
 token(_State,Token) -->
     at_least(1,black,Codes),
     ( at_least(1,space,_)
     ; followed_by(nl)
     ),
-    { string_codes(Token,Codes) }.
+    { token_codes(Token,Codes) }.
+
+
+token_codes(Token,Codes) :-
+    atom_codes(Token,Codes).
 
 
 
