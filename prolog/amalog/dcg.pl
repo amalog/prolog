@@ -161,6 +161,7 @@ atom_char(C) :-
 
 black_char(C) :-
     \+ white_char(C),
+    \+ quote_char(C),
     \+ bookend_char(C).
 
 bookend_char(0'().
@@ -174,3 +175,7 @@ space_char(0'\s).
 
 white_char(0'\s).
 white_char(0'\n).
+
+quote_char(0'').
+quote_char(0'"). %"
+quote_char(0'`).
