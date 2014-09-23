@@ -51,3 +51,23 @@ term_expansion(Text -> Tokens, (Head:-Body)) :-
     [ `perl`
     , text(back(1),`use strict;\nsay "hello"\n`)
     ].
+
+`alpha A\n\n\nbeta B\n` ->
+    [ `alpha`
+    , `A`
+    , next_predicate
+    , `beta`
+    , `B`
+    ].
+
+`lang english\nlang french\nlang spanish\n\n\nland usa\nland canada\n` ->
+    [ `lang`, `english`
+    , indent(0)
+    , `lang`, `french`
+    , indent(0)
+    , `lang`, `spanish`
+    , next_predicate
+    , `land`, `usa`
+    , indent(0)
+    , `land`, `canada`
+    ].

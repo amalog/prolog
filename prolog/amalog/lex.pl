@@ -15,16 +15,25 @@
                                    , white//1
                                    ]).
 
+
+%% tokens(Tokens:list)
+%
+%  True if Amalog text parses into Tokens.
 tokens(Ts) -->
     greedy(token,Ts),
     end,
     !.
 
 
+%% token(Token)
+%
+%  True if DCG list describes a valid Amalog token.
 token(T) -->
     word(T).
 token(T) -->
     indent(T).
+token(next_predicate) -->
+    next_predicate.
 token(T) -->
     shelf(T).
 token(T) -->
@@ -34,10 +43,13 @@ token(T) -->
     token(T).
 
 
+% a non-empty string of black characters
 word(Word) -->
     at_least(1,black,Word).
 
 
+% describes the newline and space pattern indicative of indentation
+% (indentation must be multiples of 4 spaces, no tabs)
 indent(indent(Level)) -->
     nl,
     greedy(space, Spaces),
@@ -47,6 +59,15 @@ indent(indent(Level)) -->
     { Level is N div 4 }.
 
 
+%% describes the token which separates predicate definitions
+next_predicate -->
+    nl,
+    nl,
+    nl,
+    followed_by(black).
+
+
+% describes the end of an Amalog file
 end -->
     nl,
     eos.
@@ -55,18 +76,22 @@ end -->
     eos.
 
 
+% a shelf is a list of words bracketed by bookend characters like
+% (), [] or {}.  Kind indicates which flavor of bookends was used.
 shelf(shelf(Kind,Words)) -->
     left_bookend(Kind),
     words(Words),
     right_bookend(Kind).
 
 
+% quoted textual content
 text(text(Kind,Content)) -->
     quote(Kind),
     generous(char,Content),
     quote(Kind).
 
 
+% describes a non-empty, space-separated list of Amalog words
 words([Word|Words]) -->
     word(Word),
     greedy(space_word,Words).
