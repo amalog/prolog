@@ -1,5 +1,21 @@
-:- module(amalog_dcg, [term//1]).
+:- module(amalog_dcg, [ at_least//2
+                      , at_least//3
+                      , black//0
+                      , black//1
+                      , eos//0
+                      , exactly//2
+                      , exactly//3
+                      , followed_by//1
+                      , generous//2
+                      , greedy//1
+                      , greedy//2
+                      , nl//0
+                      , space//1
+                      , term//1
+                      , white//1
+                      ]).
 
+:- use_module(library(clpfd)).
 :- use_module(library(struct)).
 
 :- structure state(indent_level:integer=0).
@@ -21,6 +37,11 @@ fact(State,Term) -->
     { Term =.. [Functor|Args] }.
 
 
+:- meta_predicate at_least(+,3,*,*).
+at_least(N,Goal) -->
+    at_least(N,Goal,_).
+
+
 % at_least(N,Goal,Matches) consumes at least N matches of Goal.
 % after that, it consumes as much as possible.
 :- meta_predicate at_least(+,3,?,*,*).
@@ -33,14 +54,44 @@ at_least(N0,Goal,[X|Xs]) -->
 at_least(0,Goal,Xs) -->
     greedy(Goal,Xs).
 
+% exactly(N,Goal) consumes exactly N matches of Goal.
+:- meta_predicate exactly(+,3,*,*).
+exactly(N,Goal) -->
+    exactly(N,Goal,_).
 
-% match as many Goal as possible
+
+% exactly(N,Goal,Matches) consumes exactly N matches of Goal.
+:- meta_predicate exactly(+,3,?,*,*).
+exactly(0,Goal,[]) -->
+    \+ call(Goal,_).
+exactly(N0,Goal,[X|Xs]) -->
+    { N0 #> 0 },
+    { N #= N0 - 1 },
+    call(Goal,X),
+    exactly(N,Goal,Xs).
+
+
+% match as few Goal as possible
+:- meta_predicate generous(3,-,*,*).
+generous(_Goal,[]) -->
+    [].
+generous(Goal,[X|Xs]) -->
+    call(Goal,X),
+    generous(Goal,Xs).
+
+
+:- meta_predicate greedy(3,*,*).
+greedy(Goal) -->
+    greedy(Goal,_).
+
+
+% match as many copies of Goal as possible
 :- meta_predicate amalog_dcg:greedy(3,-,*,*).
 greedy(Goal,[X|Xs]) -->
-    call(Goal,X),
+    ( call(Goal,X) -> [] ),
     greedy(Goal,Xs).
 greedy(_,[]) -->
-    "".
+    [].
 
 
 % followed_by(Goal) is true if Goal would match. Consumes nothing.
