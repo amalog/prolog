@@ -38,7 +38,6 @@ at_least(0,Goal,Xs) -->
 :- meta_predicate amalog_dcg:greedy(3,-,*,*).
 greedy(Goal,[X|Xs]) -->
     call(Goal,X),
-    !,
     greedy(Goal,Xs).
 greedy(_,[]) -->
     "".
