@@ -1,55 +1,53 @@
 :- use_module(library(amalog/lex),[tokens//1]).
 
+no_nl(0'\n,0'~).
+no_nl(X,X).
+
+term_expansion(Text -> Tokens, (Head:-Body)) :-
+    once(maplist(no_nl,Text,Clean)),
+    format(atom(Head),"~s",[Clean]),
+    Body = (
+        phrase(tokens(Ts),Text),
+        Ts == Tokens
+    ),
+    tap:register_test(Head).
+    
+
 :- use_module(library(tap)).
 
-'single fact' :-
-    phrase(tokens(Ts),`hello world\n`),
-    Ts == [`hello`,`world`].
+`hello world\n` -> [`hello`,`world`].
 
-'three facts' :-
-    phrase(tokens(Ts),`hello\nok\ngoodbye\n`),
-    Ts == [ `hello`
-          , indent(0)
-          , `ok`
-          , indent(0)
-          , `goodbye`
-          ].
+`hello\nstuff\nbye\n` -> [ `hello`
+                         , indent(0)
+                         , `stuff`
+                         , indent(0)
+                         , `bye`
+                         ].
 
-'single clause predicate' :-
-    phrase(tokens(Ts),`hello _Whom\n    say hello\n`),
-    Ts == [ `hello`
-          , `_Whom`
-          , indent(1)
-          , `say`
-          , `hello`
-          ].
+`hello _Whom\n    say hello\n` -> [ `hello`
+                                  , `_Whom`
+                                  , indent(1)
+                                  , `say`
+                                  , `hello`
+                                  ].
 
-'fact with single quoted text' :-
-    phrase(tokens(Ts),`hello 'to everyone'\n`),
-    Ts == [ `hello`
-          , text(single,`to everyone`)
-          ].
+`hello 'to everyone'\n` -> [ `hello`
+                           , text(single,`to everyone`)
+                           ].
 
-'fact with double quoted text' :-
-    phrase(tokens(Ts),`hello "to everyone"\n`),
-    Ts == [ `hello`
-          , text(double,`to everyone`)
-          ].
+`hello "to everyone"\n` -> [ `hello`
+                           , text(double,`to everyone`)
+                           ].
 
-'fact with single backquoted text' :-
-    phrase(tokens(Ts),`hello ``to everyone``\n`),
-    Ts == [ `hello`
-          , text(back(1),`to everyone`)
-          ].
+`hello ``to everyone``\n` -> [ `hello`
+                             , text(back(1),`to everyone`)
+                             ].
 
-'fact with double backquoted text' :-
-    phrase(tokens(Ts),`hello ````to everyone````\n`),
-    Ts == [ `hello`
-          , text(back(2),`to everyone`)
-          ].
+`hello ````to everyone````\n` -> [ `hello`
+                                 , text(back(2),`to everyone`)
+                                 ].
 
-'fact with multiline backquoted text' :-
-    phrase(tokens(Ts),`perl ``use strict;\nsay "hello"\n```),
-    Ts == [ `perl`
-          , text(back(1),`use strict;\nsay "hello"\n`)
-          ].
+`perl ``use strict;\nsay "hello"\n``` ->
+    [ `perl`
+    , text(back(1),`use strict;\nsay "hello"\n`)
+    ].
