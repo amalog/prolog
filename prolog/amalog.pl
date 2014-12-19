@@ -9,24 +9,20 @@
 
 % predicates with a tail (foo_) are private. others can be accessed
 % publicly and are declared that way for clarity.
-:- public read/2.
+:- public program/2.
 
-read(codes(Codes),Term) :-
+program(codes(Codes),Program) :-
     !,
-    read_(Codes,Term).
-read(Source,Term) :-
+    program_(Codes,Program).
+program(Source,Program) :-
     source_to_stream_(Source, Stream),
     cleanup(close(Stream)),
     read_stream_to_codes(Stream,Codes),
-    read_(Codes,Term).
+    program_(Codes,Program).
+
+program_(Codes,Program) :-
+    once(phrase(program(Program),Codes)).
 
 
 source_to_stream_(file(Path),Stream) :-
     open(Path,read,Stream).
-
-
-read_(Codes,Term) :-
-    once(phrase(term(T),Codes,Rest)),
-    ( Term=T
-    ; read_(Rest,Term)
-    ).

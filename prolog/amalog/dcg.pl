@@ -10,33 +10,77 @@
                       , greedy//1
                       , greedy//2
                       , nl//0
+                      , program//1
                       , space//1
                       , term//1
                       , white//1
                       ]).
 
+:- use_module(library(pairs), [pairs_keys_values/3]).
 :- use_module(library(clpfd)).
-:- use_module(library(struct)).
 
-:- structure state(indent_level:integer=0).
+
+program(Program) -->
+    list(predicate, predicate_separator, Program),
+    nl.
+
+predicate(Predicate) -->
+    list(clause, clause_separator, Predicate).
+
+predicate_separator(nl_nl_nl) -->
+    nl,
+    nl,
+    nl.
+
+clause(clause(Head,Body)) -->
+    list(term, term_separator, [Head|Body]).
+
+clause_separator(nl_black) -->
+    nl,
+    followed_by(black).
 
 term(Term) -->
-    { exists(state, State) },
-    { defaults(State) },
-    fact(State,Term).
+    list(word, word_separator, List),
+    { list_term(List, Term) }.
+
+term_separator(nl_indent) -->
+    nl,
+    indent.
+
+word(Word) -->
+    at_least(1,black,Word).
+
+word_separator(space) -->
+    space.
 
 
-fact(State,Term) -->
-    { struct:indent_level(State,0) },
-    token(State,Functor),
-    at_least(1,token(State),Args),
-    ( nl,eos          % last fact in the file
-    ; nl,followed_by(black)        % followed by another clause
-    ; nl,nl,nl,followed_by(black)  % last fact in the predicate
-    ),
-    { Term =.. [Functor|Args] }.
+list_term([NameCodes|Args], Term) :-
+    atom_codes(Name, NameCodes),
+    length(Args, Arity),
+    findall(N, between(1,Arity,N), Indices),
+    maplist(atom_codes, Values, Args),
+    pairs_keys_values(Pairs, Indices, Values),
+    dict_pairs(Term, Name, Pairs).
 
 
+%% list(ElemDCG, SeparatorDCG, Elems)//
+%
+%  Describes a list in which the elements match ElemDCG and the
+%  separators match SeparatorDCG. Elems is the list of elements found.
+%  The set of patterns matched by ElemDCG and SeparatorDCG
+%  should be disjoint.  Both DCG goals are called with one extra argument.
+:- meta_predicate list(3,3,?,?,?).
+list(ElemDCG, SepDCG, [Elem|Tail]) -->
+    call(ElemDCG, Elem),
+    ( call(SepDCG, _Sep),
+      !,
+      list(ElemDCG, SepDCG, Tail)
+    ; "",
+      { Tail = [] }
+    ).
+
+
+% at_least//2 is like at_least//3 but ignores the specific matches found.
 :- meta_predicate at_least(+,3,*,*).
 at_least(N,Goal) -->
     at_least(N,Goal,_).
@@ -100,40 +144,15 @@ followed_by(Goal) -->
     \+ \+ Goal.
 
 
-token(_State,Token) -->
-    at_least(1,black,Codes),
-    ( at_least(1,space,_)
-    ; followed_by(nl)
-    ),
-    { token_codes(Token,Codes) }.
-
-
-%% token_codes(Token,Codes)
-%
-%  True if Token is represented in Amalog as Codes.
-token_codes(Token,Codes) :-
-    phrase(typed_token(Token),Codes).
-
-
-typed_token(Token) -->
-    at_least(1,atom_char,Codes),
-    { atom_codes(Token,Codes) }.
-
-
-
 nl -->
     "\n".
 
 
+indent -->
+    "    ".
+
+
 eos([],[]).
-
-
-atom_char -->
-    atom_char(_).
-
-atom_char(C) -->
-    [C],
-    { atom_char(C) }.
 
 black -->
     black(_).
@@ -153,11 +172,6 @@ white(Char) -->
     [Char],
     { white_char(Char) }.
 
-
-atom_char(C) :-
-    black_char(C),
-    C \== 0'_,
-    \+ code_type(C,upper).
 
 black_char(C) :-
     \+ white_char(C),
