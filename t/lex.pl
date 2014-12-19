@@ -1,6 +1,6 @@
 :- use_module(library(amalog/lex),[tokens//1]).
 
-no_nl(0'\n,0'~).
+no_nl(0'\n,0'~). %' fix syntax highlighter
 no_nl(X,X).
 
 term_expansion(Text -> Tokens, (Head:-Body)) :-

@@ -112,27 +112,27 @@ right_bookend(Kind) -->
     { right_bookend(Kind,C) }.
 
 
-left_bookend(round, 0'().
-left_bookend(square,0'[).
-left_bookend(curly, 0'{).
+left_bookend(round, 0'(). %'
+left_bookend(square,0'[). %'
+left_bookend(curly, 0'{). %'
 
 
-right_bookend(round, 0')).
-right_bookend(square,0']).
-right_bookend(curly, 0'}).
+right_bookend(round, 0')). %'
+right_bookend(square,0']). %'
+right_bookend(curly, 0'}). %'
 
 
 quote(single) -->
     [0''].
 quote(double) -->
-    [0'"]. %"
+    [0'"]. %"'
 quote(back(N)) -->
     exactly(N,backtick),
     { N > 0 }.
 
 
-backtick(0'`) -->
-    [0'`].
+backtick(0'`) --> %`'
+    [0'`]. %`'
 
 
 % match any single character
