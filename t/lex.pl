@@ -11,7 +11,7 @@ term_expansion(Text -> Tokens, (Head:-Body)) :-
         Ts == Tokens
     ),
     tap:register_test(Head).
-    
+
 
 :- use_module(library(tap)).
 
