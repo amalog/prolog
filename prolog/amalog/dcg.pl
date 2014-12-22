@@ -33,19 +33,19 @@ predicate_pair(Clauses, Name-Clauses) :-
 predicate(Predicate) -->
     list(clause, clause_separator, Predicate).
 
-predicate_separator(nl_nl_nl) -->
+predicate_separator -->
     nl,
     nl,
     nl.
 
 clause(clause{head: Head, body: Body}) -->
     uniline_term(1,Head),
-    ( term_separator(1,_),
+    ( term_separator(1),
       list(term(1), term_separator(1), Body)
     ; { Body=[] }
     ).
 
-clause_separator(nl_black) -->
+clause_separator -->
     nl,
     followed_by(black).
 
@@ -58,7 +58,7 @@ term(Level,Term) -->
 multiline_term(IndentLevel0,Term) -->
     word(Name),
     { succ(IndentLevel0, IndentLevel) },
-    term_separator(IndentLevel,_),
+    term_separator(IndentLevel),
     list(term(IndentLevel), term_separator(IndentLevel), Args),
     { list_dict(Name,Args,Term) }.
 
@@ -66,7 +66,7 @@ uniline_term(_IndentLevel,Term) -->
     list(word, word_separator, List),
     { list_term(List, Term) }.
 
-term_separator(IndentLevel, nl_indent) -->
+term_separator(IndentLevel) -->
     nl,
     indent(IndentLevel).
 
@@ -81,7 +81,7 @@ word(Word) -->
     !,
     { atom_codes(Word, Codes) }.
 
-word_separator(space) -->
+word_separator -->
     space.
 
 
@@ -115,10 +115,10 @@ is_key(Atom,Key) :-
 %  separators match SeparatorDCG. Elems is the list of elements found.
 %  The set of patterns matched by ElemDCG and SeparatorDCG
 %  should be disjoint.  Both DCG goals are called with one extra argument.
-:- meta_predicate list(3,3,?,?,?).
+:- meta_predicate list(3,2,?,?,?).
 list(ElemDCG, SepDCG, [Elem|Tail]) -->
     call(ElemDCG, Elem),
-    ( call(SepDCG, _Sep),
+    ( call(SepDCG),
       !,
       list(ElemDCG, SepDCG, Tail)
     ; "",
