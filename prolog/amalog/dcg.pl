@@ -79,18 +79,18 @@ list_term([Name|Values], Term) :-
     list_dict(Name, Values, Term).
 
 list_dict(Name, Values, Dict) :-
-    dict_create(Dict0, Name, []),
-    once(list_dict_(Values,1,Dict0,Dict)).
+    once(phrase(list_dict_(1,Pairs),Values)),
+    dict_pairs(Dict,Name,Pairs).
 
-list_dict_([],_,Dict,Dict).
-list_dict_([WithColon,Value|Values],N,Dict0,Dict) :-
-    is_key(WithColon,Key),
-    put_dict(Key,Dict0,Value,Dict1),
-    list_dict_(Values,N,Dict1,Dict).
-list_dict_([Value|Values],N0,Dict0,Dict) :-
-    put_dict(N0,Dict0,Value,Dict1),
-    succ(N0,N),
-    list_dict_(Values,N,Dict1,Dict).
+list_dict_(N,[Key-Value|Pairs]) -->
+    [K,Value],
+    { is_key(K,Key) },
+    list_dict_(N,Pairs).
+list_dict_(N0,[N0-Value|Pairs]) -->
+    [Value],
+    { succ(N0,N) },
+    list_dict_(N,Pairs).
+list_dict_(_,[]) --> [].
 
 
 % True if Atom is a key (ends with ":") whose value is Key.
