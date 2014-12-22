@@ -66,10 +66,24 @@ list_term([NameCodes|Args], Term) :-
     list_dict(Name, Values, Term).
 
 list_dict(Name, Values, Dict) :-
-    length(Values, Arity),
-    findall(N, between(1,Arity,N), Indices),
-    pairs_keys_values(Pairs, Indices, Values),
-    dict_pairs(Dict, Name, Pairs).
+    dict_create(Dict0, Name, []),
+    once(list_dict_(Values,1,Dict0,Dict)).
+
+list_dict_([],_,Dict,Dict).
+list_dict_([WithColon,Value|Values],N,Dict0,Dict) :-
+    is_key(WithColon,Key),
+    put_dict(Key,Dict0,Value,Dict1),
+    list_dict_(Values,N,Dict1,Dict).
+list_dict_([Value|Values],N0,Dict0,Dict) :-
+    put_dict(N0,Dict0,Value,Dict1),
+    succ(N0,N),
+    list_dict_(Values,N,Dict1,Dict).
+
+
+% True if Atom is a key (ends with ":") whose value is Key.
+is_key(Atom,Key) :-
+    atom(Atom),
+    atom_concat(Key,':',Atom).
 
 
 %% list(ElemDCG, SeparatorDCG, Elems)//
