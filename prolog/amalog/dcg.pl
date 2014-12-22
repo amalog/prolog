@@ -39,7 +39,11 @@ predicate_separator(nl_nl_nl) -->
     nl.
 
 clause(clause{head: Head, body: Body}) -->
-    list(term(1), term_separator(1), [Head|Body]).
+    uniline_term(1,Head),
+    ( term_separator(1,_),
+      list(term(1), term_separator(1), Body)
+    ; { Body=[] }
+    ).
 
 clause_separator(nl_black) -->
     nl,
