@@ -12,7 +12,7 @@
                       , nl//0
                       , program//1
                       , space//1
-                      , term//1
+                      , term//2
                       , white//1
                       ]).
 
@@ -39,19 +39,19 @@ predicate_separator(nl_nl_nl) -->
     nl.
 
 clause(clause{head: Head, body: Body}) -->
-    list(term, term_separator, [Head|Body]).
+    list(term(1), term_separator(1), [Head|Body]).
 
 clause_separator(nl_black) -->
     nl,
     followed_by(black).
 
-term(Term) -->
+term(_IndentLevel,Term) -->
     list(word, word_separator, List),
     { list_term(List, Term) }.
 
-term_separator(nl_indent) -->
+term_separator(IndentLevel, nl_indent) -->
     nl,
-    indent.
+    indent(IndentLevel).
 
 word(Word) -->
     at_least(1,black,Word).
@@ -156,6 +156,14 @@ nl -->
 
 indent -->
     "    ".
+
+indent(1) -->
+    indent.
+indent(Level1) -->
+    { Level1 > 1 },
+    indent,
+    { succ(Level,Level1) },
+    indent(Level).
 
 
 eos([],[]).
