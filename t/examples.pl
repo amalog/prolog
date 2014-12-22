@@ -27,7 +27,11 @@ hello :-
         hello: [
             clause{
                 head: hello{1: pal},
-                body: [ dear{1: friend} ]
+                body: [
+                    dear{
+                        1: friend{1: of, 2: mine}
+                    }
+                ]
             },
             clause{
                 head: hello{1: you, 2: guys},

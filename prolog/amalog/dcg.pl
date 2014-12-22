@@ -65,21 +65,27 @@ multiline_term(IndentLevel0,Term) -->
 uniline_term(_IndentLevel,Term) -->
     word(Name),
     ( word_separator,
-      list(word, word_separator, List)
+      list(uniline_argument, word_separator, List)
     ; { List = [] }
     ),
     { list_dict(Name,List,Term) }.
+
+uniline_argument(Term) -->
+    "(",
+    uniline_term(_,Term),
+    ")".
+uniline_argument(string_double{1:Bytes}) -->
+    "\"",
+    string_without(`"`, Codes),
+    "\"",
+    { string_codes(Bytes, Codes) }.
+uniline_argument(Term) -->
+    word(Term).
 
 term_separator(IndentLevel) -->
     nl,
     indent(IndentLevel).
 
-word(string_double{1:Bytes}) -->
-    "\"",
-    !,
-    string_without(`"`, Codes),
-    "\"",
-    { string_codes(Bytes, Codes) }.
 word(Word) -->
     at_least(1,black,Codes),
     !,
