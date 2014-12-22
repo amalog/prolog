@@ -16,7 +16,7 @@
                       , white//1
                       ]).
 
-:- use_module(library(pairs), [pairs_keys_values/3]).
+:- use_module(library(dcg/basics), [string_without//2]).
 :- use_module(library(clpfd)).
 
 
@@ -45,6 +45,13 @@ clause_separator(nl_black) -->
     nl,
     followed_by(black).
 
+
+term(IndentLevel0,Term) -->
+    word(Name),
+    { succ(IndentLevel0, IndentLevel) },
+    term_separator(IndentLevel,_),
+    list(term(IndentLevel), term_separator(IndentLevel), Args),
+    { list_dict(Name,Args,Term) }.
 term(_IndentLevel,Term) -->
     list(word, word_separator, List),
     { list_term(List, Term) }.
@@ -53,6 +60,12 @@ term_separator(IndentLevel, nl_indent) -->
     nl,
     indent(IndentLevel).
 
+word(bytes(Bytes)) -->
+    "\"",
+    !,
+    string_without(`"`, Codes),
+    "\"",
+    { string_codes(Bytes, Codes) }.
 word(Word) -->
     at_least(1,black,Codes),
     !,

@@ -46,6 +46,29 @@ hello :-
         ]
     }.
 
+'csv-munge' :-
+    amalog:program(file("t/samples/csv-munge.ama"), P),
+    P == amalog{
+        main: [
+            clause{
+                head: main{},
+                body: [
+                    handle{1: err},
+                    pipe_all{
+                        1: csv_read{
+                            1: bytes("secondary-notes.csv"),
+                            columns: col
+                        },
+                        2: munge{},
+                        3: csv_write{
+                            1: bytes("secondary-munged.csv")
+                        }
+                    }
+                ]
+            }
+        ]
+    }.
+
 'camelcase atom prohibited'(todo) :-
     amalog:read(codes(`camelCase`),_).
 
