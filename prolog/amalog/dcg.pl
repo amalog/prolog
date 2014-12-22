@@ -62,11 +62,14 @@ word_separator(space) -->
 
 list_term([NameCodes|Args], Term) :-
     atom_codes(Name, NameCodes),
-    length(Args, Arity),
-    findall(N, between(1,Arity,N), Indices),
     maplist(atom_codes, Values, Args),
+    list_dict(Name, Values, Term).
+
+list_dict(Name, Values, Dict) :-
+    length(Values, Arity),
+    findall(N, between(1,Arity,N), Indices),
     pairs_keys_values(Pairs, Indices, Values),
-    dict_pairs(Term, Name, Pairs).
+    dict_pairs(Dict, Name, Pairs).
 
 
 %% list(ElemDCG, SeparatorDCG, Elems)//
