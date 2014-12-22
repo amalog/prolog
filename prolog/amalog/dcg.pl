@@ -54,15 +54,15 @@ term_separator(IndentLevel, nl_indent) -->
     indent(IndentLevel).
 
 word(Word) -->
-    at_least(1,black,Word).
+    at_least(1,black,Codes),
+    !,
+    { atom_codes(Word, Codes) }.
 
 word_separator(space) -->
     space.
 
 
-list_term([NameCodes|Args], Term) :-
-    atom_codes(Name, NameCodes),
-    maplist(atom_codes, Values, Args),
+list_term([Name|Values], Term) :-
     list_dict(Name, Values, Term).
 
 list_dict(Name, Values, Dict) :-
