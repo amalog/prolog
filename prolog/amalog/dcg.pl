@@ -46,13 +46,19 @@ clause_separator(nl_black) -->
     followed_by(black).
 
 
-term(IndentLevel0,Term) -->
+term(Level,Term) -->
+    multiline_term(Level,Term).
+term(Level,Term) -->
+    uniline_term(Level,Term).
+
+multiline_term(IndentLevel0,Term) -->
     word(Name),
     { succ(IndentLevel0, IndentLevel) },
     term_separator(IndentLevel,_),
     list(term(IndentLevel), term_separator(IndentLevel), Args),
     { list_dict(Name,Args,Term) }.
-term(_IndentLevel,Term) -->
+
+uniline_term(_IndentLevel,Term) -->
     list(word, word_separator, List),
     { list_term(List, Term) }.
 
