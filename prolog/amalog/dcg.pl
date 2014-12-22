@@ -60,7 +60,7 @@ term_separator(IndentLevel, nl_indent) -->
     nl,
     indent(IndentLevel).
 
-word(bytes(Bytes)) -->
+word(string_double{1:Bytes}) -->
     "\"",
     !,
     string_without(`"`, Codes),

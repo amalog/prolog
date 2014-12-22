@@ -56,12 +56,12 @@ hello :-
                     handle{1: err},
                     pipe_all{
                         1: csv_read{
-                            1: bytes("secondary-notes.csv"),
+                            1: string_double{1:"secondary-notes.csv"},
                             columns: col
                         },
                         2: munge{},
                         3: csv_write{
-                            1: bytes("secondary-munged.csv")
+                            1: string_double{1: "secondary-munged.csv"}
                         }
                     }
                 ]
