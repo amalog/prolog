@@ -63,8 +63,12 @@ multiline_term(IndentLevel0,Term) -->
     { list_dict(Name,Args,Term) }.
 
 uniline_term(_IndentLevel,Term) -->
-    list(word, word_separator, List),
-    { list_term(List, Term) }.
+    word(Name),
+    ( word_separator,
+      list(word, word_separator, List)
+    ; { List = [] }
+    ),
+    { list_dict(Name,List,Term) }.
 
 term_separator(IndentLevel) -->
     nl,
@@ -84,9 +88,6 @@ word(Word) -->
 word_separator -->
     space.
 
-
-list_term([Name|Values], Term) :-
-    list_dict(Name, Values, Term).
 
 list_dict(Name, Values, Dict) :-
     once(phrase(list_dict_(1,Pairs),Values)),
