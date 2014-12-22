@@ -21,8 +21,14 @@
 
 
 program(Program) -->
-    list(predicate, predicate_separator, Program),
-    nl.
+    list(predicate, predicate_separator, Predicates),
+    nl,
+    { maplist(predicate_pair, Predicates, Pairs) },
+    { dict_pairs(Program, amalog, Pairs) }.
+
+predicate_pair(Clauses, Name-Clauses) :-
+    Clauses = [Clause|_],
+    is_dict(Clause.head, Name).
 
 predicate(Predicate) -->
     list(clause, clause_separator, Predicate).
@@ -32,7 +38,7 @@ predicate_separator(nl_nl_nl) -->
     nl,
     nl.
 
-clause(clause(Head,Body)) -->
+clause(clause{head: Head, body: Body}) -->
     list(term, term_separator, [Head|Body]).
 
 clause_separator(nl_black) -->

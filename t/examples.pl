@@ -4,29 +4,47 @@
 
 facts :-
     amalog:program(file("t/samples/facts.ama"),P),
-    P == [ [ clause( language{1: amalog}, [] )
-           , clause( language{1: prolog}, [] )
-           , clause( language{1: 'scheme-like?'}, [] )
-           ]
-    ].
+    P == amalog{
+        language: [
+            clause{
+                head: language{1: amalog},
+                body: []
+            },
+            clause{
+                head: language{1: prolog},
+                body: []
+            },
+            clause{
+                head: language{1: 'scheme-like?'},
+                body: []
+            }
+        ]
+    }.
 
 hello :-
     amalog:program(file("t/samples/hello.ama"),P),
-    P == [ [ clause( hello{1: pal}
-                   , [ dear{1: friend} ]
-                   )
-           , clause( hello{1: you, 2: guys}
-                   , [ etc{} ]
-                   )
-           ]
-         , [ clause( foo{1: bar, 2: baz}
-                   , [ do{1: stuff} ]
-                   )
-           , clause( foo{1:'_', 2:'_'}
-                   , []
-                   )
-           ]
-    ].
+    P == amalog{
+        hello: [
+            clause{
+                head: hello{1: pal},
+                body: [ dear{1: friend} ]
+            },
+            clause{
+                head: hello{1: you, 2: guys},
+                body: [ etc{} ]
+            }
+        ],
+        foo: [
+            clause{
+                head: foo{1: bar, 2: baz},
+                body: [do{1: stuff}]
+            },
+            clause{
+                head: foo{1:'_', 2:'_'},
+                body: []
+            }
+        ]
+    }.
 
 'camelcase atom prohibited'(todo) :-
     amalog:read(codes(`camelCase`),_).
