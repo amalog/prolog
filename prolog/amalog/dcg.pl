@@ -1,20 +1,4 @@
-:- module(amalog_dcg, [ at_least//2
-                      , at_least//3
-                      , black//0
-                      , black//1
-                      , eos//0
-                      , exactly//2
-                      , exactly//3
-                      , followed_by//1
-                      , generous//2
-                      , greedy//1
-                      , greedy//2
-                      , nl//0
-                      , program//1
-                      , space//1
-                      , term//2
-                      , white//1
-                      ]).
+:- module(amalog_dcg, [ program//1 ]).
 
 :- use_module(library(dcg/basics), [string_without//2]).
 :- use_module(library(clpfd)).
