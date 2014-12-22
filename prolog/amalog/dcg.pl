@@ -135,31 +135,6 @@ at_least(N0,Goal,[X|Xs]) -->
 at_least(0,Goal,Xs) -->
     greedy(Goal,Xs).
 
-% exactly(N,Goal) consumes exactly N matches of Goal.
-:- meta_predicate exactly(+,3,*,*).
-exactly(N,Goal) -->
-    exactly(N,Goal,_).
-
-
-% exactly(N,Goal,Matches) consumes exactly N matches of Goal.
-:- meta_predicate exactly(+,3,?,*,*).
-exactly(0,Goal,[]) -->
-    \+ call(Goal,_).
-exactly(N0,Goal,[X|Xs]) -->
-    { N0 #> 0 },
-    { N #= N0 - 1 },
-    call(Goal,X),
-    exactly(N,Goal,Xs).
-
-
-% match as few Goal as possible
-:- meta_predicate generous(3,-,*,*).
-generous(_Goal,[]) -->
-    [].
-generous(Goal,[X|Xs]) -->
-    call(Goal,X),
-    generous(Goal,Xs).
-
 
 :- meta_predicate greedy(3,*,*).
 greedy(Goal) -->
@@ -195,10 +170,6 @@ indent(Level1) -->
     indent,
     { succ(Level,Level1) },
     indent(Level).
-
-
-eos([],[]).
-
 black -->
     black(_).
 
