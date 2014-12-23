@@ -10,9 +10,10 @@ program(Program) -->
     { maplist(predicate_pair, Predicates, Pairs) },
     { dict_pairs(Program, amalog, Pairs) }.
 
-predicate_pair(Clauses, Name-Clauses) :-
+predicate_pair(Clauses, Name-Dict) :-
     Clauses = [Clause|_],
-    is_dict(Clause.head, Name).
+    is_dict(Clause.head, Name),
+    list_dict(clauses,Clauses,Dict).
 
 predicate(Predicate) -->
     list(clause, clause_separator, Predicate).

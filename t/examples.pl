@@ -5,27 +5,27 @@
 facts :-
     amalog:program(file("t/samples/facts.ama"),P),
     P == amalog{
-        language: [
-            clause{
+        language: clauses{
+            1: clause{
                 head: language{1: amalog},
                 body: []
             },
-            clause{
+            2: clause{
                 head: language{1: prolog},
                 body: []
             },
-            clause{
+            3: clause{
                 head: language{1: 'scheme-like?'},
                 body: []
             }
-        ]
+        }
     }.
 
 hello :-
     amalog:program(file("t/samples/hello.ama"),P),
     P == amalog{
-        hello: [
-            clause{
+        hello: clauses{
+            1: clause{
                 head: hello{1: pal},
                 body: [
                     dear{
@@ -33,28 +33,28 @@ hello :-
                     }
                 ]
             },
-            clause{
+            2: clause{
                 head: hello{1: you, 2: guys},
                 body: [ etc{} ]
             }
-        ],
-        foo: [
-            clause{
+        },
+        foo: clauses{
+            1: clause{
                 head: foo{1: bar, 2: baz},
                 body: [do{1: stuff}]
             },
-            clause{
+            2: clause{
                 head: foo{1:'_', 2:'_'},
                 body: []
             }
-        ]
+        }
     }.
 
 'csv-munge' :-
     amalog:program(file("t/samples/csv-munge.ama"), P),
     P == amalog{
-        main: [
-            clause{
+        main: clauses{
+            1: clause{
                 head: main{},
                 body: [
                     handle{1: err},
@@ -70,7 +70,7 @@ hello :-
                     }
                 ]
             }
-        ]
+        }
     }.
 
 'camelcase atom prohibited'(todo) :-
