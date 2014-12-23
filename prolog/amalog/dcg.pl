@@ -2,13 +2,28 @@
 
 :- use_module(library(dcg/basics), [string_without//2]).
 :- use_module(library(clpfd)).
+:- use_module(library(delay)).
+
+
+:- multifile delay:mode/1.
+delay:mode(system:dict_pairs(nonvar,_,_)).
+delay:mode(system:dict_pairs(_,_,list)).
+
+delay:mode(amalog_dcg:map(nonvar,list,_)).
+delay:mode(amalog_dcg:map(nonvar,_,list)).
+
+% alias for maplist/3 that's not subject to apply_macros expansion.
+% this allows us to use delay/1
+:- meta_predicate map(2,?,?).
+map(F,Xs,Ys) :-
+    maplist(F,Xs,Ys).
 
 
 program(Program) -->
+    { delay(dict_pairs(Program, amalog, Pairs)) },
+    { delay(map(predicate_pair, Predicates, Pairs)) },
     list(predicate, predicate_separator, Predicates),
-    nl,
-    { maplist(predicate_pair, Predicates, Pairs) },
-    { dict_pairs(Program, amalog, Pairs) }.
+    nl.
 
 predicate_pair(Clauses, Name-Dict) :-
     Clauses = [Clause|_],
