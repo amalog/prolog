@@ -180,7 +180,15 @@ greedy(_,[]) -->
 % followed_by(Goal) is true if Goal would match. Consumes nothing.
 :- meta_predicate amalog_dcg:followed_by(//,*,*).
 followed_by(Goal) -->
-    \+ \+ Goal.
+    ( parsing -> \+ \+ Goal; [] ).
+
+
+%% parsing// is semidet.
+%
+%  True if DCG is operating as a parser.  Specifically,
+%  the DCG list is not a variable.
+parsing(H,H) :-
+    nonvar(H).
 
 
 nl -->
