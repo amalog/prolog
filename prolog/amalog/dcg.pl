@@ -6,11 +6,21 @@
 
 
 :- multifile delay:mode/1.
-delay:mode(system:dict_pairs(nonvar,_,_)).
-delay:mode(system:dict_pairs(_,_,list)).
+delay:mode(amalog_dcg:dict_pairs(nonvar,_,_)).
+delay:mode(amalog_dcg:dict_pairs(_,_,list)).
 
 delay:mode(amalog_dcg:map(nonvar,list,_)).
 delay:mode(amalog_dcg:map(nonvar,_,list)).
+
+delay:mode(amalog_dcg:list_dict(_,list,_)).
+delay:mode(amalog_dcg:list_dict(_,_,nonvar)).
+
+% alias for system:dict_pairs/3 which fails (instead of throwing
+% an exception when the dict is not a dict).
+:- redefine_system_predicate(dict_pairs(_,_,_)).
+dict_pairs(Dict,Tag,Pairs) :-
+    once(var(Dict); is_dict(Dict)),
+    system:dict_pairs(Dict,Tag,Pairs).
 
 % alias for maplist/3 that's not subject to apply_macros expansion.
 % this allows us to use delay/1
@@ -26,9 +36,9 @@ program(Program) -->
     nl.
 
 predicate_pair(Clauses, Name-Dict) :-
+    list_dict(clauses,Clauses,Dict),
     Clauses = [Clause|_],
-    is_dict(Clause.head, Name),
-    list_dict(clauses,Clauses,Dict).
+    is_dict(Clause.head, Name).
 
 predicate(Predicate) -->
     list(clause, clause_separator, Predicate).
@@ -63,12 +73,12 @@ multiline_term(IndentLevel0,Term) -->
     { list_dict(Name,Args,Term) }.
 
 uniline_term(_IndentLevel,Term) -->
+    { delay(list_dict(Name,List,Term)) },
     word(Name),
     ( word_separator,
       list(uniline_argument, word_separator, List)
     ; { List = [] }
-    ),
-    { list_dict(Name,List,Term) }.
+    ).
 
 uniline_argument(Term) -->
     "(",
@@ -87,17 +97,18 @@ term_separator(IndentLevel) -->
     indent(IndentLevel).
 
 word(Word) -->
+    { delay(atom_codes(Word,Codes)) },
     at_least(1,black,Codes),
-    !,
-    { atom_codes(Word, Codes) }.
+    !.
 
 word_separator -->
     space.
 
 
 list_dict(Name, Values, Dict) :-
-    once(phrase(list_dict_(1,Pairs),Values)),
-    dict_pairs(Dict,Name,Pairs).
+    delay(dict_pairs(Dict,Name,Pairs)),
+    once(phrase(list_dict_(1,Pairs),Values)).
+
 
 list_dict_(N,[Key-Value|Pairs]) -->
     [K,Value],
@@ -126,11 +137,11 @@ is_key(Atom,Key) :-
 list(ElemDCG, SepDCG, [Elem|Tail]) -->
     call(ElemDCG, Elem),
     ( call(SepDCG),
-      !,
       list(ElemDCG, SepDCG, Tail)
     ; "",
       { Tail = [] }
-    ).
+    ),
+    !.
 
 
 % at_least//2 is like at_least//3 but ignores the specific matches found.
