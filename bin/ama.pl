@@ -8,4 +8,5 @@ main([Filename]) :-
     once( amalog:program(file(Filename),Program)
         ; throw("Unable to parse program")
         ),
-    writeln(Program).
+    writeq(Program),
+    nl.
