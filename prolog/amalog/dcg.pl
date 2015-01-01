@@ -4,6 +4,7 @@
 :- use_module(library(clpfd)).
 :- use_module(library(delay)).
 
+:- use_module(library(dcg_util)).
 
 :- multifile delay:mode/1.
 delay:mode(amalog_dcg:dict_pairs(nonvar,_,_)).
@@ -125,70 +126,6 @@ list_dict_(_,[]) --> [].
 is_key(Atom,Key) :-
     atom(Atom),
     atom_concat(Key,':',Atom).
-
-
-%% list(ElemDCG, SeparatorDCG, Elems)//
-%
-%  Describes a list in which the elements match ElemDCG and the
-%  separators match SeparatorDCG. Elems is the list of elements found.
-%  The set of patterns matched by ElemDCG and SeparatorDCG
-%  should be disjoint.  Both DCG goals are called with one extra argument.
-:- meta_predicate list(3,2,?,?,?).
-list(ElemDCG, SepDCG, [Elem|Tail]) -->
-    call(ElemDCG, Elem),
-    ( call(SepDCG),
-      list(ElemDCG, SepDCG, Tail)
-    ; "",
-      { Tail = [] }
-    ),
-    !.
-
-
-% at_least//2 is like at_least//3 but ignores the specific matches found.
-:- meta_predicate at_least(+,3,*,*).
-at_least(N,Goal) -->
-    at_least(N,Goal,_).
-
-
-% at_least(N,Goal,Matches) consumes at least N matches of Goal.
-% after that, it consumes as much as possible.
-:- meta_predicate at_least(+,3,?,*,*).
-at_least(N0,Goal,[X|Xs]) -->
-    { N0 > 0 },
-    !,
-    call(Goal,X),
-    { N is N0 - 1 },
-    at_least(N,Goal,Xs).
-at_least(0,Goal,Xs) -->
-    greedy(Goal,Xs).
-
-
-:- meta_predicate greedy(3,*,*).
-greedy(Goal) -->
-    greedy(Goal,_).
-
-
-% match as many copies of Goal as possible
-:- meta_predicate amalog_dcg:greedy(3,-,*,*).
-greedy(Goal,[X|Xs]) -->
-    ( call(Goal,X) -> [] ),
-    greedy(Goal,Xs).
-greedy(_,[]) -->
-    [].
-
-
-% followed_by(Goal) is true if Goal would match. Consumes nothing.
-:- meta_predicate amalog_dcg:followed_by(//,*,*).
-followed_by(Goal) -->
-    ( parsing -> \+ \+ Goal; [] ).
-
-
-%% parsing// is semidet.
-%
-%  True if DCG is operating as a parser.  Specifically,
-%  the DCG list is not a variable.
-parsing(H,H) :-
-    nonvar(H).
 
 
 nl -->
