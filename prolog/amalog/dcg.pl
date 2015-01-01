@@ -90,8 +90,23 @@ uniline_argument(string_double{1:Bytes}) -->
     string_without(`"`, Codes),
     "\"",
     { string_codes(Bytes, Codes) }.
+uniline_argument(Binary) -->
+    binary_quote(N),
+    string_without(`\``,Codes),
+    binary_quote(N),
+    { string_codes(Binary,Codes) }.
 uniline_argument(Term) -->
     word(Term).
+
+backtick(0'`) --> % ' syntax highlighter
+    "`".
+
+binary_quote(N) -->
+    when_generating(fail),
+    greedy(backtick,Ticks),
+    !,
+    { length(Ticks, N) }.
+
 
 term_separator(IndentLevel) -->
     nl,

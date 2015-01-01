@@ -35,7 +35,10 @@ hello :-
             },
             2: clause{
                 head: hello{1: you, 2: guys},
-                body: [ 'say!'{1: etc} ]
+                body: [
+                    'say!'{1: "dearly beloved"},
+                    'be-sure'{1: "double ticks are OK"}
+                ]
             }
         },
         foo: clauses{
