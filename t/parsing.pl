@@ -35,7 +35,7 @@ hello :-
             },
             2: clause{
                 head: hello{1: you, 2: guys},
-                body: [ etc{} ]
+                body: [ 'say!'{1: etc} ]
             }
         },
         foo: clauses{
