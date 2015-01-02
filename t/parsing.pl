@@ -8,15 +8,15 @@ facts :-
         language: clauses{
             1: clause{
                 head: language{1: amalog},
-                body: []
+                body: goals{}
             },
             2: clause{
                 head: language{1: prolog},
-                body: []
+                body: goals{}
             },
             3: clause{
                 head: language{1: 'scheme-like?'},
-                body: []
+                body: goals{}
             }
         }
     }.
@@ -27,28 +27,28 @@ hello :-
         hello: clauses{
             1: clause{
                 head: hello{1: pal},
-                body: [
-                    dear{
+                body: goals{
+                    1: dear{
                         1: friend{1: of, 2: mine}
                     }
-                ]
+                }
             },
             2: clause{
                 head: hello{1: you, 2: guys},
-                body: [
-                    'say!'{1: "dearly beloved"},
-                    'be-sure'{1: "double ticks are OK"}
-                ]
+                body: goals{
+                    1: 'say!'{1: "dearly beloved"},
+                    2: 'be-sure'{1: "double ticks are OK"}
+                }
             }
         },
         foo: clauses{
             1: clause{
                 head: foo{1: bar, 2: baz},
-                body: [do{1: stuff}]
+                body: goals{1: do{1: stuff} }
             },
             2: clause{
                 head: foo{1:'_', 2:'_'},
-                body: []
+                body: goals{}
             }
         }
     }.
@@ -59,9 +59,9 @@ hello :-
         main: clauses{
             1: clause{
                 head: main{},
-                body: [
-                    handle{1: err},
-                    pipe_all{
+                body: goals{
+                    1: handle{1: err},
+                    2: pipe_all{
                         1: csv_read{
                             1: string_double{1:"secondary-notes.csv"},
                             columns: col
@@ -71,7 +71,7 @@ hello :-
                             1: string_double{1: "secondary-munged.csv"}
                         }
                     }
-                ]
+                }
             }
         }
     }.

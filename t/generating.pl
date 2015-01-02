@@ -10,7 +10,7 @@ small :-
                     1: hi,
                     2: bye
                 },
-                body: []
+                body: goals{}
             }
         }
     },
