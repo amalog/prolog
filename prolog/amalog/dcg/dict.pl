@@ -28,3 +28,9 @@ list_dict_(N0,[N0-Value|Pairs]) -->
     { succ(N0,N) },
     list_dict_(N,Pairs).
 list_dict_(_,[]) --> [].
+
+
+% True if Atom is a key (ends with ":") whose value is Key.
+is_key(Atom,Key) :-
+    atom(Atom),
+    atom_concat(Key,':',Atom).

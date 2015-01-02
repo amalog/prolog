@@ -31,6 +31,15 @@ black_char(C) :-
     \+ bookend_char(C).
 
 
+lowercase(C) -->
+    [C],
+    { between(0'a,0'z,C) }.
+
+
+dash(0'-) --> %'
+    "-".
+
+
 bookend_char(0'(). %'
 bookend_char(0')). %'
 bookend_char(0'[). %'
@@ -49,3 +58,12 @@ white_char(0'\n).
 quote_char(0'').
 quote_char(0'"). %"'
 quote_char(0'`). %`'
+
+
+tag_tail(C) -->
+    [C],
+    { tag_tail_char(C) }.
+
+% characters that can end a tag
+tag_tail_char(0'!). %'
+tag_tail_char(0'?). %'

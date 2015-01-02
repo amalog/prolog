@@ -47,7 +47,7 @@ hello :-
                 body: goals{1: do{1: stuff} }
             },
             2: clause{
-                head: foo{1:'_', 2:'_'},
+                head: foo{1:var('_'), 2:var('_')},
                 body: goals{}
             }
         }
@@ -61,13 +61,13 @@ hello :-
                 head: main{},
                 body: goals{
                     1: handle{1: err},
-                    2: pipe_all{
-                        1: csv_read{
+                    2: 'pipe-all'{
+                        1: 'csv-read'{
                             1: string_double{1:"secondary-notes.csv"},
                             columns: col
                         },
                         2: munge{},
-                        3: csv_write{
+                        3: 'csv-write'{
                             1: string_double{1: "secondary-munged.csv"}
                         }
                     }

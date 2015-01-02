@@ -15,8 +15,10 @@ delay:mode(amalog_dcg:map(nonvar,_,list)).
 
 delay:mode(amalog_dcg:backtick_count(ground,_)).
 
+:- [dcg/util].
 :- [dcg/char].
 :- [dcg/tag].
+:- [dcg/key].
 :- [dcg/binary].
 :- [dcg/dict].
 
@@ -48,12 +50,13 @@ predicate_separator -->
     nl.
 
 clause(clause{head: Head, body: Body}) -->
+    { delay(list_dict(goals,Terms,Body)) },
     uniline_term(1,Head),
     ( term_separator(1),
       list(term(1), term_separator(1), Terms)
     ; { Terms=[] }
-    ),
-    { list_dict(goals,Terms,Body) }.
+    ).
+
 
 clause_separator -->
     nl,
@@ -92,8 +95,12 @@ uniline_argument(string_double{1:Bytes}) -->
 uniline_argument(Binary) -->
     { delay(string(Binary)) },
     binary(Binary).
-uniline_argument(Term) -->
-    tag(Term).
+uniline_argument(Key) -->
+    key(Key).
+uniline_argument(Tag) -->
+    tag(Tag).
+uniline_argument(var('_')) -->
+    "_".
 
 
 term_separator(IndentLevel) -->
@@ -102,13 +109,6 @@ term_separator(IndentLevel) -->
 
 word_separator -->
     space.
-
-
-% True if Atom is a key (ends with ":") whose value is Key.
-is_key(Atom,Key) :-
-    atom(Atom),
-    atom_concat(Key,':',Atom).
-
 
 
 indent -->
