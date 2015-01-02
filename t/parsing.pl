@@ -76,8 +76,14 @@ hello :-
         }
     }.
 
-'camelcase atom prohibited'(todo) :-
-    amalog:read(codes(`camelCase`),_).
+'camelcase atom prohibited'(fail) :-
+    amalog:program(codes(`camelCase\n`),_).
 
-'underscore separated atom prohibited'(todo) :-
-    amalog:read(codes(`underscore_separated`),_).
+'underscore separated atom prohibited'(fail) :-
+    amalog:program(codes(`underscore_separated\n`),_).
+
+'tags may not have a trailing dash'(fail) :-
+    amalog:program(codes(`hello-\n`),_).
+
+'keys may not have a trailing dash'(todo) :-
+    amalog:program(codes(`main args-:\n`),_).
