@@ -6,7 +6,6 @@
 
 :- use_module(library(dcg_util)).
 
-:- [dcg/binary].
 
 :- multifile delay:mode/1.
 delay:mode(system:string(ground)).
@@ -21,6 +20,9 @@ delay:mode(amalog_dcg:list_dict(_,list,_)).
 delay:mode(amalog_dcg:list_dict(_,_,nonvar)).
 
 delay:mode(amalog_dcg:backtick_count(ground,_)).
+
+:- [dcg/binary].
+
 
 % alias for system:dict_pairs/3 which fails (instead of throwing
 % an exception when the dict is not a dict).
