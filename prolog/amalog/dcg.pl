@@ -15,6 +15,7 @@ delay:mode(amalog_dcg:map(nonvar,_,list)).
 
 delay:mode(amalog_dcg:backtick_count(ground,_)).
 
+:- [dcg/tag].
 :- [dcg/binary].
 :- [dcg/dict].
 
@@ -64,7 +65,7 @@ term(Level,Term) -->
     uniline_term(Level,Term).
 
 multiline_term(IndentLevel0,Term) -->
-    word(Name),
+    tag(Name),
     { succ(IndentLevel0, IndentLevel) },
     term_separator(IndentLevel),
     list(term(IndentLevel), term_separator(IndentLevel), Args),
@@ -72,7 +73,7 @@ multiline_term(IndentLevel0,Term) -->
 
 uniline_term(_IndentLevel,Term) -->
     { delay(list_dict(Name,List,Term)) },
-    word(Name),
+    tag(Name),
     ( word_separator,
       list(uniline_argument, word_separator, List)
     ; { List = [] }
@@ -91,17 +92,12 @@ uniline_argument(Binary) -->
     { delay(string(Binary)) },
     binary(Binary).
 uniline_argument(Term) -->
-    word(Term).
+    tag(Term).
 
 
 term_separator(IndentLevel) -->
     nl,
     indent(IndentLevel).
-
-word(Word) -->
-    { delay(atom_codes(Word,Codes)) },
-    at_least(1,black,Codes),
-    !.
 
 word_separator -->
     space.
