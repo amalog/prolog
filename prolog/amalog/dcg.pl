@@ -10,26 +10,14 @@
 :- multifile delay:mode/1.
 delay:mode(system:string(ground)).
 
-delay:mode(amalog_dcg:dict_pairs(nonvar,_,_)).
-delay:mode(amalog_dcg:dict_pairs(_,_,list)).
-
 delay:mode(amalog_dcg:map(nonvar,list,_)).
 delay:mode(amalog_dcg:map(nonvar,_,list)).
-
-delay:mode(amalog_dcg:list_dict(_,list,_)).
-delay:mode(amalog_dcg:list_dict(_,_,nonvar)).
 
 delay:mode(amalog_dcg:backtick_count(ground,_)).
 
 :- [dcg/binary].
+:- [dcg/dict].
 
-
-% alias for system:dict_pairs/3 which fails (instead of throwing
-% an exception when the dict is not a dict).
-:- redefine_system_predicate(dict_pairs(_,_,_)).
-dict_pairs(Dict,Tag,Pairs) :-
-    once(var(Dict); is_dict(Dict)),
-    system:dict_pairs(Dict,Tag,Pairs).
 
 % alias for maplist/3 that's not subject to apply_macros expansion.
 % this allows us to use delay/1
@@ -117,22 +105,6 @@ word(Word) -->
 
 word_separator -->
     space.
-
-
-list_dict(Name, Values, Dict) :-
-    delay(dict_pairs(Dict,Name,Pairs)),
-    once(phrase(list_dict_(1,Pairs),Values)).
-
-
-list_dict_(N,[Key-Value|Pairs]) -->
-    [K,Value],
-    { is_key(K,Key) },
-    list_dict_(N,Pairs).
-list_dict_(N0,[N0-Value|Pairs]) -->
-    [Value],
-    { succ(N0,N) },
-    list_dict_(N,Pairs).
-list_dict_(_,[]) --> [].
 
 
 % True if Atom is a key (ends with ":") whose value is Key.
