@@ -6,10 +6,10 @@ binary(B) -->
     { delay(backtick_count(Codes,InternalTickCount)) },
     { delay(succ(InternalTickCount,ExternalTickCount)) },
     backticks(ExternalTickCount),
-    generous(any,Codes),
+    generous(any_char,Codes),
     backticks(ExternalTickCount).
 
-any(C) --> [C].
+any_char(C) --> [C].
 
 backticks(N) -->
     exactly(N,backtick).
