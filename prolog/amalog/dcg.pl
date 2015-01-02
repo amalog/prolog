@@ -7,6 +7,8 @@
 :- use_module(library(dcg_util)).
 
 :- multifile delay:mode/1.
+delay:mode(system:string(ground)).
+
 delay:mode(amalog_dcg:dict_pairs(nonvar,_,_)).
 delay:mode(amalog_dcg:dict_pairs(_,_,list)).
 
@@ -15,6 +17,8 @@ delay:mode(amalog_dcg:map(nonvar,_,list)).
 
 delay:mode(amalog_dcg:list_dict(_,list,_)).
 delay:mode(amalog_dcg:list_dict(_,_,nonvar)).
+
+delay:mode(amalog_dcg:backtick_count(ground,_)).
 
 % alias for system:dict_pairs/3 which fails (instead of throwing
 % an exception when the dict is not a dict).
@@ -92,21 +96,33 @@ uniline_argument(string_double{1:Bytes}) -->
     "\"",
     { string_codes(Bytes, Codes) }.
 uniline_argument(Binary) -->
-    binary_quote(N),
-    string_without(`\``,Codes),
-    binary_quote(N),
-    { string_codes(Binary,Codes) }.
+    { delay(string(Binary)) },
+    binary(Binary).
 uniline_argument(Term) -->
     word(Term).
 
 backtick(0'`) --> % ' syntax highlighter
     "`".
 
-binary_quote(N) -->
-    when_generating(fail),
-    greedy(backtick,Ticks),
-    !,
-    { length(Ticks, N) }.
+binary(B) -->
+    { delay(string_codes(B,Codes)) },
+    { delay(backtick_count(Codes,InternalTickCount)) },
+    { delay(succ(InternalTickCount,ExternalTickCount)) },
+    backticks(ExternalTickCount),
+    generous(any,Codes),
+    backticks(ExternalTickCount).
+
+any(C) --> [C].
+
+backticks(N) -->
+    exactly(N,backtick).
+
+backtick_count(Codes, N) :-
+    foldl(count_backtick, Codes, 0, N).
+
+count_backtick(X,N0,N) :-
+    ( X = 0'` -> Incr=1; Incr=0 ), % ' syntax
+    plus(N0,Incr,N).
 
 
 term_separator(IndentLevel) -->

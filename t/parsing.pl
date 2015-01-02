@@ -37,7 +37,7 @@ hello :-
                 head: hello{1: you, 2: guys},
                 body: goals{
                     1: 'say!'{1: "dearly beloved"},
-                    2: 'be-sure'{1: "double ticks are OK"}
+                    2: 'be-sure'{1: "double ticks ` are OK"}
                 }
             }
         },
