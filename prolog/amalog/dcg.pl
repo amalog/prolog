@@ -15,6 +15,7 @@ delay:mode(amalog_dcg:map(nonvar,_,list)).
 
 delay:mode(amalog_dcg:backtick_count(ground,_)).
 
+:- [dcg/char].
 :- [dcg/tag].
 :- [dcg/binary].
 :- [dcg/dict].
@@ -109,9 +110,6 @@ is_key(Atom,Key) :-
     atom_concat(Key,':',Atom).
 
 
-nl -->
-    "\n".
-
 
 indent -->
     "    ".
@@ -123,42 +121,3 @@ indent(Level1) -->
     indent,
     { succ(Level,Level1) },
     indent(Level).
-black -->
-    black(_).
-
-black(Char) -->
-    [Char],
-    { black_char(Char) }.
-
-space -->
-    space(_).
-
-space(C) -->
-    [C],
-    { space_char(C) }.
-
-white(Char) -->
-    [Char],
-    { white_char(Char) }.
-
-
-black_char(C) :-
-    \+ white_char(C),
-    \+ quote_char(C),
-    \+ bookend_char(C).
-
-bookend_char(0'(). %'
-bookend_char(0')). %'
-bookend_char(0'[). %'
-bookend_char(0']). %'
-bookend_char(0'{). %'
-bookend_char(0'}). %'
-
-space_char(0'\s).
-
-white_char(0'\s).
-white_char(0'\n).
-
-quote_char(0'').
-quote_char(0'"). %"'
-quote_char(0'`). %`'
