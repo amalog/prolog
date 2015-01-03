@@ -21,6 +21,7 @@ delay:mode(amalog_dcg:backtick_count(ground,_)).
 :- [dcg/key].
 :- [dcg/binary].
 :- [dcg/dict].
+:- [dcg/term].
 
 
 % alias for maplist/3 that's not subject to apply_macros expansion.
@@ -63,26 +64,6 @@ clause_separator -->
     followed_by(black).
 
 
-term(Level,Term) -->
-    multiline_term(Level,Term).
-term(Level,Term) -->
-    uniline_term(Level,Term).
-
-multiline_term(IndentLevel0,Term) -->
-    tag(Name),
-    { succ(IndentLevel0, IndentLevel) },
-    term_separator(IndentLevel),
-    list(term(IndentLevel), term_separator(IndentLevel), Args),
-    { list_dict(Name,Args,Term) }.
-
-uniline_term(_IndentLevel,Term) -->
-    { delay(list_dict(Name,List,Term)) },
-    tag(Name),
-    ( word_separator,
-      list(uniline_argument, word_separator, List)
-    ; { List = [] }
-    ).
-
 uniline_argument(Term) -->
     "(",
     uniline_term(_,Term),
@@ -101,14 +82,6 @@ uniline_argument(Tag) -->
     tag(Tag).
 uniline_argument(var('_')) -->
     "_".
-
-
-term_separator(IndentLevel) -->
-    nl,
-    indent(IndentLevel).
-
-word_separator -->
-    space.
 
 
 indent -->
