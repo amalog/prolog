@@ -29,3 +29,14 @@ at_most(N0,Rule,[X|Xs]) -->
     at_most(N,Rule,Xs).
 at_most(_,_,[]) -->
     [].
+
+
+%% once(:Dcg)//
+%
+%  Like once/1 but for use inside DCG rules.
+%  This can be helpful when Dcg matches differently on backtracking
+%  but you have a circumstance where you know that only the first
+%  match is applicable.
+:- meta_predicate once(2,*,*).
+once(Rule) -->
+    ( call(Rule) -> []; { fail } ).

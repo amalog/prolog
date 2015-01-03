@@ -18,7 +18,7 @@ uniline_term(Term) -->
     { delay(list_dict(Name,List,Term)) },
     tag(Name),
     ( word_separator,
-      list(uniline_argument, word_separator, List)
+      once(list(uniline_argument, word_separator, List))
     ; { List = [] }
     ).
 

@@ -54,7 +54,7 @@ clause(clause{head: Head, body: Body}) -->
     { delay(list_dict(goals,Terms,Body)) },
     uniline_term(Head),
     ( term_separator(1),
-      list(term(1), term_separator(1), Terms)
+      once(list(term(1), term_separator(1), Terms))
     ; { Terms=[] }
     ).
 
