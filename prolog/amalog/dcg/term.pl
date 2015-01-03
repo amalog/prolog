@@ -2,8 +2,8 @@
 
 term(Level,Term) -->
     multiline_term(Level,Term).
-term(Level,Term) -->
-    uniline_term(Level,Term).
+term(_Level,Term) -->
+    uniline_term(Term).
 
 
 multiline_term(IndentLevel0,Term) -->
@@ -14,7 +14,7 @@ multiline_term(IndentLevel0,Term) -->
     { list_dict(Name,Args,Term) }.
 
 
-uniline_term(_IndentLevel,Term) -->
+uniline_term(Term) -->
     { delay(list_dict(Name,List,Term)) },
     tag(Name),
     ( word_separator,
