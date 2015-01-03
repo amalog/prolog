@@ -36,7 +36,7 @@ lowercase(C) -->
     { between(0'a,0'z,C) }.
 
 
-dash(0'-) --> %'
+dash -->
     "-".
 
 

@@ -121,3 +121,7 @@ indent(Level1) -->
     indent,
     { succ(Level,Level1) },
     indent(Level).
+
+
+lowercase_word(Word) -->
+    greedy(lowercase,Word).
