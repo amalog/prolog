@@ -82,8 +82,8 @@ hello :-
 'underscore separated atom prohibited'(fail) :-
     amalog:program(codes(`underscore_separated\n`),_).
 
-'tags may not have a trailing dash'(todo) :- % should fail
+'tags may not have a trailing dash'(fail) :-
     amalog:program(codes(`hello-\n`),_).
 
-'keys may not have a trailing dash'(todo) :-  % should fail
+'keys may not have a trailing dash'(fail) :-
     amalog:program(codes(`main args-: bar\n`),_).

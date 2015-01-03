@@ -124,4 +124,4 @@ indent(Level1) -->
 
 
 lowercase_word(Word) -->
-    greedy(lowercase,Word).
+    at_least(1,lowercase,Word).
